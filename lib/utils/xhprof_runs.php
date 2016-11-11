@@ -76,7 +76,8 @@ class XHProfRuns_Default implements iXHProfRuns {
 
   private function file_name($run_id, $type) {
 
-    $file = "$run_id.$type." . $this->suffix;
+      // @todo remove "type"
+    $file = "$run_id." . $this->suffix;
 
     if (!empty($this->dir)) {
       $file = $this->dir . "/" . $file;
@@ -84,28 +85,16 @@ class XHProfRuns_Default implements iXHProfRuns {
     return $file;
   }
 
-  public function __construct($dir = null) {
-
-    // if user hasn't passed a directory location,
-    // we use the xhprof.output_dir ini setting
-    // if specified, else we default to the directory
-    // in which the error_log file resides.
-
-    if (empty($dir)) {
-      $dir = ini_get("xhprof.output_dir");
-      if (empty($dir)) {
-
-        $dir = sys_get_temp_dir();
-
-        xhprof_error("Warning: Must specify directory location for XHProf runs. ".
-                     "Trying {$dir} as default. You can either pass the " .
-                     "directory location as an argument to the constructor ".
-                     "for XHProfRuns_Default() or set xhprof.output_dir ".
-                     "ini param.");
-      }
+    public function __construct($dir = null)
+    {
+        if (!empty(ini_get('xhprof.output_dir'))) {
+            $this->dir = realpath(ini_get('xhprof.output_dir'));
+        } elseif (function_exists('env') && !empty(env('XHPROF_OUTPUT_DIR'))) {
+            $this->dir = realpath(env('XHPROF_OUTPUT_DIR'));
+        } else {
+            $this->dir = realpath(sys_get_temp_dir());
+        }
     }
-    $this->dir = $dir;
-  }
 
   public function get_run($run_id, $type, &$run_desc) {
     $file_name = $this->file_name($run_id, $type);

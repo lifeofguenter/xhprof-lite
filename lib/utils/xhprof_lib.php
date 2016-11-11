@@ -491,6 +491,10 @@ function xhprof_compute_flat_info($raw_data, &$overall_totals) {
   }
 
   /* adjust exclusive times by deducting inclusive time of children */
+  if (empty($raw_data) || !is_array($raw_data)) {
+      return $symbol_tab;
+  }
+
   foreach ($raw_data as $parent_child => $info) {
     list($parent, $child) = xhprof_parse_parent_child($parent_child);
 
@@ -567,15 +571,18 @@ function xhprof_compute_diff($xhprof_data1, $xhprof_data2) {
 function xhprof_compute_inclusive_times($raw_data) {
   global $display_calls;
 
-  $metrics = xhprof_get_metrics($raw_data);
+  if (empty($raw_data) || !is_array($raw_data)) {
+      return [];
+  }
 
-  $symbol_tab = array();
+  $metrics = xhprof_get_metrics($raw_data);
 
   /*
    * First compute inclusive time for each function and total
    * call count for each function across all parents the
    * function is called from.
    */
+  $symbol_tab = [];
   foreach ($raw_data as $parent_child => $info) {
 
     list($parent, $child) = xhprof_parse_parent_child($parent_child);
@@ -903,10 +910,6 @@ function xhprof_param_init($params) {
       xhprof_error("Invalid param type passed to xhprof_param_init: "
                    . $v[0]);
       exit();
-    }
-
-    if ($k === 'run') {
-      $p = implode(',', array_filter(explode(',', $p), 'ctype_xdigit'));
     }
 
     // create a global variable using the parameter name.

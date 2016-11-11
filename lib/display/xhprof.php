@@ -28,14 +28,9 @@
 // @author Kannan Muthukkaruppan
 //
 
-if (!isset($GLOBALS['XHPROF_LIB_ROOT'])) {
-  // by default, the parent directory is XHPROF lib root
-  $GLOBALS['XHPROF_LIB_ROOT'] = realpath(dirname(__FILE__) . '/..');
-}
-
-require_once $GLOBALS['XHPROF_LIB_ROOT'].'/utils/xhprof_lib.php';
-require_once $GLOBALS['XHPROF_LIB_ROOT'].'/utils/callgraph_utils.php';
-require_once $GLOBALS['XHPROF_LIB_ROOT'].'/utils/xhprof_runs.php';
+require_once __DIR__ . '/../utils/xhprof_lib.php';
+require_once __DIR__ . '/../utils/callgraph_utils.php';
+require_once __DIR__ . '/../utils/xhprof_runs.php';
 
 
 /**
@@ -851,13 +846,15 @@ function full_report($url_params, $symbol_tab, $sort, $run1, $run2) {
     echo "<th></th>";
     echo "</tr>";
 
-    foreach ($metrics as $metric) {
-      echo "<tr>";
-      echo "<td style='text-align:right; font-weight:bold'>Total "
-            . str_replace("<br>", " ", stat_description($metric)) . ":</td>";
-      echo "<td>" . number_format($totals[$metric]) .  " "
-           . $possible_metrics[$metric][1] . "</td>";
-      echo "</tr>";
+    if (!empty($metrics)) {
+        foreach ($metrics as $metric) {
+          echo "<tr>";
+          echo "<td style='text-align:right; font-weight:bold'>Total "
+                . str_replace("<br>", " ", stat_description($metric)) . ":</td>";
+          echo "<td>" . number_format($totals[$metric]) .  " "
+               . $possible_metrics[$metric][1] . "</td>";
+          echo "</tr>";
+        }
     }
 
     if ($display_calls) {
