@@ -29,6 +29,10 @@
  * @author Changhao Jiang (cjiang@facebook.com)
  */
 
+error_reporting(E_ALL);
+ini_set('display_errors', true);
+
+require __DIR__ . '/../app/helper.php';
 require_once __DIR__ . '/../lib/display/xhprof.php';
 
 ini_set('max_execution_time', 100);

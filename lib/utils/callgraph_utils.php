@@ -435,6 +435,7 @@ function  xhprof_render_diff_image($xhprof_runs_impl, $run1, $run2,
 function xhprof_get_content_by_run($xhprof_runs_impl, $run_id, $type,
                                    $threshold, $func, $source,
                                    $critical_path) {
+
   if (!$run_id)
     return "";
 
